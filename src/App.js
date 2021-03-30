@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect} from "react";
+import { connect } from 'react-redux';
+import "./style.css";
+import {getCountries} from './actions';
 
-function App() {
+const App = (props) => {
+
+  useEffect(() => {
+   props.getCountries();
+  },[]);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className="App">
+        <h1>React-Redux</h1>
+        <h2>Countries Api</h2>
+          <hr/>
+        {props.isLoading ? <p>Yukleniyor...</p> : props.countries.map(country => {
+          return (
+              <div key={country.name}>
+                <h3>{country.name}</h3>
+                <h4>{country.capital}</h4>
+                <p>
+                  <img
+                      src={country.flag}
+                      alt={country.name}
+                      style={{ width: "100px" }}
+                  />
+                </p>
+              </div>
+          );
+        })}
+      </div>
   );
+};
+
+const mapStateToProps = (state) => {
+    return {
+        countries: state.countries,
+        isLoading: state.isLoading
+    }
 }
 
-export default App;
+export default connect(mapStateToProps,{getCountries})(App);
